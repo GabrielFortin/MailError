@@ -45,35 +45,42 @@ class ErreurMail:
 			if '.msg' in fichier:
 				msg = extract_msg.Message(fichier)
 				msg_message = str(msg.body)
+				msg_subj = str(msg.subject)
 				
-				if re.findall('Failed+\s+Recipient+:+.+', msg_message):
+				if 'Delivery Failure' in msg_subj:
 					address = re.findall('Failed+\s+Recipient+:+.+', msg_message)[0]
 					address = address.replace('Failed Recipient: ', '')
+					print(1)
 
 					if '<' in address:
 						address = address.replace('<', '')
 				
-				elif re.findall('\(+.+\@+.+\)', msg_message):
-					address = re.findall('\(+.+\@+.+\)', msg_message)[0]
+				elif 'Non remis' in msg_subj:
+					address = re.findall('\(+[A-z0-9]+\@+.+\)', msg_message)[0]
 					address = address.replace('(', '').replace(')', '')
+					print(2)
 
-				elif re.findall('Invalid+\s+recipient+:+.+\@+.+', msg_message):
+				elif 'This Message was undeliverable due to the following reason' in msg_message:
 					address = re.findall('Invalid+\s+recipient+:+.+\@+.+', msg_message)[0]
 					address = address.strip('Invalid recipient: <').strip('>')
+					print(3)
 
-				elif re.findall('t+\s+delivered+\s+to+\s+.+\@+.+', msg_message):
+				elif 'email account that you tried' in msg_message and "wasn't delivered" in msg_message:
 					address = re.findall('t+\s+delivered+\s+to+\s+.+\@+.+', msg_message)[0]
 					address = address.strip('t delivered to ')
 					address = address.split('because')[0]
+					print(4)
 
-				elif re.findall('for+\s+\<+.+\@+.+', msg_message):
+				elif re.findall('for+\s+\<+.+\@+.+', msg_message) and "We're writing to let you know that the group" in msg_message:
 					address = re.findall('for+\s+\<+.+\@+.+', msg_message)[0]
 					address = address.split('>')[0]
 					address = address.strip('for <')
+					print(5)
 
-				elif re.findall('\<+.+\@+.+\>', msg_message):
+				elif re.findall('\<+.+\@+.+\>', msg_message) and 'The following addresses had permanent fatal errors' in msg_message:
 					address = re.findall('\<+.+\@+.+\>', msg_message)[0]
 					address = address.strip('<').strip('>')
+					print(6)
 				
 				else:
 					print("Le fichier nommé " + str(fichier) + " a été sauté puisque le programme n'a pas pu trouver d'adresse courriel erronée.")
