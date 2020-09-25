@@ -26,7 +26,7 @@ class ErreurMail:
 		self.title = Label(master, text="Bienvenue dans ErreurMail")		
 		self.title.pack()
 		
-		self.label = Label(master, text="Mettre les fichiers .msg à lire dans le dossier Emails")
+		self.label = Label(master, text="Mettre les fichiers .msg à lire dans le même dossier que l'exécutable")
 		self.label.pack()
 
 		self.label2 = Label(master, text="Appuyer sur le bouton pour lire les fichiers")
@@ -36,7 +36,7 @@ class ErreurMail:
 		self.greet_button.pack()
 
 	def parse(self):		
-		fichiers = os.listdir('./Emails')
+		fichiers = os.listdir('.')
 		
 		bad_addresses = []
 		
@@ -68,7 +68,7 @@ class ErreurMail:
 			else:
 				continue
 		
-		with open('Addresses_erronees.txt', 'w') as file:
+		with open('Adresses_erronees.txt', 'w') as file:
 			to_write = ""
 			for address in bad_addresses:
 					to_write += address
