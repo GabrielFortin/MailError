@@ -56,6 +56,22 @@ class ErreurMail:
 				elif re.findall('\(+.+\@+.+\)', msg_message):
 					address = re.findall('\(+.+\@+.+\)', msg_message)[0]
 					address = address.replace('(', '').replace(')', '')
+
+				elif re.findall('Invalid+\s+recipient+:+.+\@+.+'):
+					address = re.findall('Invalid+\s+recipient+:+.+\@+.+')[0]
+					address = address.strip('Invalid recipient: <').strip('>')
+				elif re.findall('t+\s+delivered+\s+to+\s+.+\@+.+'):
+					address = re.findall('t+\s+delivered+\s+to+\s+.+\@+.+')[0]
+					address = address.strip('t delivered to ')
+
+				elif re.findall('for+\s+\<+.+\@+.+'):
+					address = re.findall('for+\s+\<+.+\@+.+')[0]
+					address = address.split('>')[0]
+					address = address.strip('for <')
+
+				elif re.findall('\<+.+\@+.+\>'):
+					address = re.findall('\<+.+\@+.+\>')[0]
+					address = address.strip('<').strip('>')
 				
 				else:
 					print("Le fichier nommé " + str(fichier) + " a été sauté puisque le programme n'a pas pu trouver d'adresse courriel erronée.")
