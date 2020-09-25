@@ -44,7 +44,7 @@ class ErreurMail:
 			
 			if '.msg' in fichier:
 				msg = extract_msg.Message(fichier)
-				msg_message = msg.body
+				msg_message = str(msg.body)
 				
 				if re.findall('Failed+\s+Recipient+:+.+', msg_message):
 					address = re.findall('Failed+\s+Recipient+:+.+', msg_message)[0]
@@ -57,20 +57,22 @@ class ErreurMail:
 					address = re.findall('\(+.+\@+.+\)', msg_message)[0]
 					address = address.replace('(', '').replace(')', '')
 
-				elif re.findall('Invalid+\s+recipient+:+.+\@+.+'):
-					address = re.findall('Invalid+\s+recipient+:+.+\@+.+')[0]
+				elif re.findall('Invalid+\s+recipient+:+.+\@+.+', msg_message):
+					address = re.findall('Invalid+\s+recipient+:+.+\@+.+', msg_message)[0]
 					address = address.strip('Invalid recipient: <').strip('>')
-				elif re.findall('t+\s+delivered+\s+to+\s+.+\@+.+'):
-					address = re.findall('t+\s+delivered+\s+to+\s+.+\@+.+')[0]
-					address = address.strip('t delivered to ')
 
-				elif re.findall('for+\s+\<+.+\@+.+'):
-					address = re.findall('for+\s+\<+.+\@+.+')[0]
+				elif re.findall('t+\s+delivered+\s+to+\s+.+\@+.+', msg_message):
+					address = re.findall('t+\s+delivered+\s+to+\s+.+\@+.+', msg_message)[0]
+					address = address.strip('t delivered to ')
+					address = address.split('because')[0]
+
+				elif re.findall('for+\s+\<+.+\@+.+', msg_message):
+					address = re.findall('for+\s+\<+.+\@+.+', msg_message)[0]
 					address = address.split('>')[0]
 					address = address.strip('for <')
 
-				elif re.findall('\<+.+\@+.+\>'):
-					address = re.findall('\<+.+\@+.+\>')[0]
+				elif re.findall('\<+.+\@+.+\>', msg_message):
+					address = re.findall('\<+.+\@+.+\>', msg_message)[0]
 					address = address.strip('<').strip('>')
 				
 				else:
